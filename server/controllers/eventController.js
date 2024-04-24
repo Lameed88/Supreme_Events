@@ -28,9 +28,6 @@ function sendCheckInMail(data) {
         subject: `${data.name} You've Checked In - SUPREME`,
         html: `Dear ${data.name},<br><br>
            <strong>Congratulations, you've successfully checked in!</strong><br><br>
-           Name: ${data.name}<br>
-           Registration Number: ${data.regNo}<br>
-           Contact Number: ${data.number}<br><br>
            If you have any questions or concerns, please don't hesitate to contact us:<br>
            Olamide: moradeyor88@gmail.com<br>
           
@@ -59,7 +56,7 @@ const postEvent = async (req, res) => {
     const Organizer = req.body.organizer;
 
     const adminId = req.body.admin_id;
-    console.log("Admin mil gaya: ", adminId);
+    console.log("Admin moradeyor: ", adminId);
 
     const secret = JWT_SECRET;
     const payload = {
@@ -179,6 +176,7 @@ const deleteEvent = async (req, res) => {
 const checkin = async (req, res) => {
     const eventId = req.body.event_id;
     const userList = req.body.checkInList;
+    console.log(userList)
 
     let eventName = "";
 
@@ -193,7 +191,7 @@ const checkin = async (req, res) => {
 
     for (let i = 0; i < userList.length; i++) {
         Event.updateOne(
-            { event_id: eventId, "participants.id": userList[i] },
+        { event_id: eventId, "participants.email": userList[i].email },
             { $set: { "participants.$.entry": true } },
             function (err) {
                 if (err) return handleError(err);
@@ -205,21 +203,21 @@ const checkin = async (req, res) => {
     }
 
     for (let i = 0; i < userList.length; i++) {
-        User.find({ user_token: userList[i] })
-            .then((data) => {
+        // User.find({ user_token: userList[i] })
+        //     .then((data) => {
                 const data_obj = {
-                    name: data[0].username,
-                    regNo: data[0].reg_number,
-                    email: data[0].email,
-                    number: data[0].contactNumber,
+                    name: userList[i].name,
+                    // regNo: data[0].reg_number,
+                    email: userList[i].email,
+                    // number: data[0].contactNumber,
                     event: eventName,
                 };
 
                 sendCheckInMail(data_obj);
-            })
-            .catch((err) => {
-                // console.log({ msg: "Error fetching event", error: err });
-            });
+            // })
+            // .catch((err) => {
+            //     // console.log({ msg: "Error fetching event", error: err });
+            // });
     }
 
     res.status(200).send({ msg: "success" });

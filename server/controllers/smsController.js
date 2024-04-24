@@ -59,7 +59,37 @@ function sendTicket(Details) {
   });
 }
 
+function sendMultiTicket(Details) {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.NODE_MAILER_USER,
+      pass: process.env.NODE_MAILER_PASS,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  let mailOptions = {
+    from: process.env.NODE_MAILER_USER,
+    to: Details.email,
+    subject: `Your Online Event Pass for ${Details.event_name} - SUPREME✨`,
+    html: `Dear <i>${Details.name}</i>,<br><br>Thank you for registering for ${Details.event_name}! We are excited to have you join us and want to make sure that you have all the information you need to have a great time.<br><br>Your online pass has been generated and is ready for you to use. Please remember to keep this pass with you at all times during the event and do not share it with anyone else.<br><br><strong>
+    Pass Number: ${Details.pass}<br><br>If you have any questions or concerns, please don't hesitate to reach out to us. We're here to help please contact us at:<br>Olamide: moradeyor88@gmail.com<br><br>Best regards,<br>SUPREME EVENT`,
+  };
+
+  transporter.sendMail(mailOptions, function (err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Email sent successfully");
+    }
+  });
+}
+
 module.exports = {
   sendSMS,
   sendTicket,
+  sendMultiTicket
 };

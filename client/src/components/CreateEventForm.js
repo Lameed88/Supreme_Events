@@ -209,7 +209,7 @@ const CreateEvent = () => {
                                 htmlFor="cover"
                                 className="block font-medium text-gray-700"
                             >
-                                Cover Image URL:
+                                Upload Event cover picture:
                             </label>
                             <input
                                 type="file"

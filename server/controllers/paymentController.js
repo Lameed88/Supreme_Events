@@ -1,4 +1,4 @@
-const { sendTicket } = require("./smsController");
+const { sendTicket, sendMultiTicket } = require("./smsController");
 const express = require("express");
 const app = express();
 const User = require("../models/user");
@@ -20,131 +20,168 @@ const stripe = require("stripe")(process.env.STRIPE_KEY);
 const uuid = require("uuid").v4;
 
 const payment = async (req, res) => {
-    let charge, status, check;
-    var { product, token, user, event } = req.body;
+  let charge, status, check;
+  var { product, token, user, event, purchaseData } = req.body;
 
-    var key = uuid().slice(0,18);
+  var key = uuid().slice(0, 18);
 
-    try {
-        const customer = await stripe.customers.create({
-            email: token.email,
-            source: token.id,
-        });
+  const purChaseDataWithKey = purchaseData.map((data) => {
+    return { ...data, key: uuid().slice(0, 18) };
+  });
 
-        charge = await stripe.charges.create(
-            {
-                amount: product.price * 100,
-                currency: "NGN",
-                customer: customer.id,
-                receipt_email: token.email,
-                description: `Booked Ticket for ${product.name}`,
-                shipping: {
-                    name: token.billing_name,
-                    address: {
-                        line1: token.shipping_address_line1,
-                        line2: token.shipping_address_line2,
-                        city: token.shipping_address_city,
-                        country: token.shipping_address_country,
-                        postal_code: token.shipping_address_zip,
-                    },
-                },
-            },
-            {
-                idempotencyKey: key,
-            }
-        );
-
-        console.log("Charge: ", { charge });
-        status = "success";
-    } catch (error) {
-        console.log(error);
-        status = "success";
-    }
-
-    // collecting ticket details
-    User.find({ user_token: user.user_id }, async function (err, docs) {
-        console.log(docs);
-        if (docs.length !== 0) {
-            var Details = {
-                email: docs[0].email,
-                event_name: product.name,
-                name: token.billing_name,
-                pass: key,
-                price: product.price,
-                address1: token.shipping_address_line1,
-                city: token.shipping_address_city,
-                zip: token.shipping_address_zip,
-            };
-
-            console.log("All details before email: ", Details);
-
-            try {
-                Event.findOne(
-                    {
-                        event_id: event.event_id,
-                        "participants.id": user.user_id,
-                    },
-                    function (err, doc) {
-                        if (err) return handleError(err);
-                        if (doc) {
-                            console.log("Element already exists in array");
-                            check = "alreadyregistered";
-                        } else {
-                            Event.updateOne(
-                                { event_id: event.event_id },
-                                {
-                                    $push: {
-                                        participants: {
-                                            id: user.user_id,
-                                            name: docs[0].username,
-                                            email: docs[0].email,
-                                            passID: key,
-                                            regno: docs[0].reg_number,
-                                            entry: false,
-                                        },
-                                    },
-                                },
-                                function (err) {
-                                    if (err) {
-                                        console.log(err);
-                                    }
-                                }
-                            );
-                        }
-                    }
-                );
-            } catch (err) {
-                console.log(err);
-            }
-            if (check !== "alreadyregistered") {
-                sendTicket(Details);
-            }
-        } else {
-            status = "error";
-            res.status(401).send({ msg: "User is unauthorized" });
-        }
+  try {
+    const customer = await stripe.customers.create({
+      email: token.email,
+      source: token.id,
     });
 
-    Event.find({ event_id: event.event_id }, async function (err, events) {
-        if (events.length !== 0) {
-            User.updateOne(
-                { user_token: user.user_id },
+    charge = await stripe.charges.create(
+      {
+        amount: product.price * 100,
+        currency: "NGN",
+        customer: customer.id,
+        receipt_email: token.email,
+        description: `Booked Ticket for ${product.name}`,
+        shipping: {
+          name: token.billing_name,
+          address: {
+            line1: token.shipping_address_line1,
+            line2: token.shipping_address_line2,
+            city: token.shipping_address_city,
+            country: token.shipping_address_country,
+            postal_code: token.shipping_address_zip,
+          },
+        },
+      },
+      {
+        idempotencyKey: key,
+      }
+    );
 
-                { $push: { registeredEvents: events[0] } },
-                function (err) {
+    console.log("Charge: ", { charge });
+    status = "success";
+  } catch (error) {
+    console.log(error);
+    status = "success";
+  }
+
+  // collecting ticket details
+  User.find({ user_token: user.user_id }, async function (err, docs) {
+    console.log(docs);
+    if (docs.length !== 0) {
+      var Details = {
+        email: docs[0].email,
+        event_name: product.name,
+        name: token.billing_name,
+        pass: key,
+        price: product.price,
+        address1: token.shipping_address_line1,
+        city: token.shipping_address_city,
+        zip: token.shipping_address_zip,
+      };
+
+      console.log("All details before email: ", Details);
+
+      try {
+        Event.findOne(
+          {
+            event_id: event.event_id,
+            "participants.id": user.user_id,
+          },
+          function (err, doc) {
+            if (err) return handleError(err);
+            if (doc) {
+              console.log("Element already exists in array");
+              check = "alreadyregistered";
+            } else if (purchaseData) {
+              purChaseDataWithKey.forEach((data) =>
+                Event.updateOne(
+                  { event_id: event.event_id },
+                  {
+                    $push: {
+                      participants: {
+                        name: data.name,
+                        email: data.email,
+                        passID: data.key,
+                        entry: false,
+                      },
+                    },
+                  },
+                  function (err) {
                     if (err) {
-                        console.log(err);
+                      console.log(err);
                     }
+                  }
+                )
+              );
+            } else {
+              Event.updateOne(
+                { event_id: event.event_id },
+                {
+                  $push: {
+                    participants: {
+                      id: user.user_id,
+                      name: docs[0].username,
+                      email: docs[0].email,
+                      passID: key,
+                      regno: docs[0].reg_number,
+                      entry: false,
+                    },
+                  },
+                },
+                function (err) {
+                  if (err) {
+                    console.log(err);
+                  }
                 }
-            );
+              );
+            }
+          }
+        );
+      } catch (err) {
+        console.log(err);
+      }
+
+      //   if (check !== "alreadyregistered" || purchaseData) {
+      if (check !== "alreadyregistered") {
+        sendTicket(Details);
+      }
+
+      if (purchaseData) {
+        purChaseDataWithKey.forEach((data) => {
+          const eachData = {
+            email: data.email,
+            event_name: product.name,
+            name: data.name,
+            pass: data.key,
+          };
+          sendMultiTicket(eachData);
+        });
+        // }
+      }
+    } else {
+      status = "error";
+      res.status(401).send({ msg: "User is unauthorized" });
+    }
+  });
+
+  Event.find({ event_id: event.event_id }, async function (err, events) {
+    if (events.length !== 0) {
+      User.updateOne(
+        { user_token: user.user_id },
+
+        { $push: { registeredEvents: events[0] } },
+        function (err) {
+          if (err) {
+            console.log(err);
+          }
         }
-    });
-    res.send({ status });
+      );
+    }
+  });
+  res.send({ status });
 };
 
 module.exports = {
-    payment,
+  payment,
 };
-
-
-

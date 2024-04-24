@@ -3,7 +3,7 @@ import { getUserToken } from "@/utils/getUserToken";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 
 import {
@@ -21,12 +21,16 @@ function EventPage() {
   const userId = getUserToken();
   const [eventData, setEventData] = useState([]);
   const [isUserRegistered, setIsUserRegistered] = useState(false);
+  const [multiTicketsPrice, setMultiTicketsPrice] = useState(
+    Number(eventData.price)
+  );
   const [ticketItems, setTicketItems] = useState([
     {
       name: "",
       email: "",
     },
   ]);
+  console.log(multiTicketsPrice);
 
   // function to handle share button click
   const share = () => {
@@ -72,6 +76,10 @@ function EventPage() {
     }
   };
 
+  useEffect(() => {
+    setMultiTicketsPrice(Number(eventData.price) * ticketItems.length);
+  }, [ticketItems.length, eventData]);
+
   const addRow = () => {
     const newRow = {
       name: "",
@@ -87,6 +95,29 @@ function EventPage() {
     const updatedData = [...ticketItems];
     updatedData.splice(index, 1);
     setTicketItems(updatedData);
+  };
+
+  const handleMultiTicketsPurchase = (e) => {
+    e.preventDefault();
+    const jsonString = JSON.stringify(ticketItems);
+    const encodedString = encodeURIComponent(jsonString);
+
+    router.push(`/event/${eventId}/payment?data=${encodedString}`);
+  };
+
+  const handleTicketsInputChange = (index, fieldName, value) => {
+    console.log(index)
+    console.log(fieldName)
+    console.log(value)
+    setTicketItems((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[index] = {
+        ...updatedData[index],
+        [fieldName]: value,
+        
+      };
+      return updatedData
+    });
   };
 
   useEffect(() => {
@@ -172,7 +203,11 @@ function EventPage() {
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     Ticket Pricing
                   </h3>
-                  <p className="text-gray-800">#{eventData.price}</p>
+                  <p className="text-gray-800">
+                    {" "}
+                    <span className="font-bold">NGN</span>
+                    {eventData.price}
+                  </p>
                 </div>
                 <div className="flex mt-4 md:mt-0">
                   <button
@@ -194,13 +229,14 @@ function EventPage() {
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     About the Event
                   </h3>
-                  {Array(3)
+                  {/* {Array(3)
                     .fill()
-                    .map((_, index) => (
-                      <p key={index} className="text-gray-600 text-md">
-                        {eventData.description}
-                      </p>
-                    ))}
+                    .map((_, index) => ( */}
+                  {/* <p key={index} className="text-gray-600 text-md"> */}
+                  <p className="text-gray-600 text-md">
+                    {eventData.description}
+                  </p>
+                  {/* ))} */}
                 </div>
                 <div className="mb-4 bg-white px-6 py-4 rounded-lg shadow-md">
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
@@ -212,34 +248,74 @@ function EventPage() {
                       <DialogHeader>
                         <DialogTitle>Are you absolutely sure?</DialogTitle>
                         <DialogDescription>
-                          {ticketItems.map((ticketItem, index) => (
-                            <div className="flex mt-3 items-end ">
-                              <div className="flex gap-3 w-[90%]">
-                                <label htmlFor="" className="w-full">
-                                  Name:
-                                  <br />
-                                  <input className="border w-full " type="text" />
-                                </label>
-                                <label htmlFor="" className="w-full">
-                                  email:
-                                  <br />
-                                  <input className="border w-full" type="text" />
-                                </label>
+                          <form action="" onSubmit={handleMultiTicketsPurchase}>
+                            {ticketItems.map((ticketItem, index) => (
+                              <div className="flex mt-3 items-end ">
+                                <div className="flex gap-3 w-[90%]">
+                                  <label htmlFor="" className="w-full">
+                                    Name:
+                                    <br />
+                                    <input
+                                      required
+                                      className="border w-full "
+                                      value={ticketItem.name}
+                                      onChange={(e) =>
+                                        handleTicketsInputChange(
+                                          index,
+                                          "name",
+                                          e.target.value
+                                        )
+                                      }
+                                      type="text"
+                                    />
+                                  </label>
+                                  <label htmlFor="" className="w-full">
+                                    email:
+                                    <br />
+                                    <input
+                                      required
+                                      onChange={(e) =>
+                                        handleTicketsInputChange(
+                                          index,
+                                          "email",
+                                          e.target.value
+                                        )
+                                      }
+                                      value={ticketItem.email}
+                                      className="border w-full"
+                                      type="text"
+                                    />
+                                  </label>
+                                </div>
+                                {ticketItems.length > 1 && (
+                                  <MdDelete
+                                    className="cursor-pointer h-7 w-7 text-red-600"
+                                    onClick={() => deleteRow(index)}
+                                  />
+                                )}
                               </div>
-                              {ticketItems.length > 1 && (
-                                <MdDelete
-                                  className="cursor-pointer h-7 w-7 text-red-600"
-                                  onClick={() => deleteRow(index)}
-                                />
-                              )}
+                            ))}
+                            <div className="flex justify-between items-center">
+                              <button
+                                className="rounded-full p-4 bg-blue-600 h-8 w-8 flex items-center justify-center mt-4 text-white"
+                                onClick={addRow}
+                                type="button"
+                              >
+                                +
+                              </button>
+                              <div>NGN {Number(multiTicketsPrice)}</div>
+                              <button
+                                type="submit"
+                                //   onClick={
+                                //     // router.push(`/event/${eventId}/payment`)
+                                //   }
+                                className={`px-3 py-2 bg-[color:var(--darker-secondary-color)] hover:bg-[color:var(--secondary-color)]
+                             text-white rounded focus:outline-none`}
+                              >
+                                {"Buy Tickets"}
+                              </button>
                             </div>
-                          ))}
-                          <button
-                            className="rounded-full p-4 bg-blue-600 h-8 w-8 flex items-center justify-center mt-4 text-white"
-                            onClick={addRow}
-                          >
-                            +
-                          </button>
+                          </form>
                         </DialogDescription>
                       </DialogHeader>
                     </DialogContent>
@@ -247,7 +323,7 @@ function EventPage() {
                   <ul className="text-gray-600">
                     {[
                       {
-                        type: "Event price*",
+                        type: "Event price:",
                         price: eventData.price,
                       },
                       // {
@@ -264,7 +340,10 @@ function EventPage() {
                         key={index}
                       >
                         <span className="w-1/3">{item.type}</span>
-                        <span className="w-1/3 text-center">#{item.price}</span>
+                        <span className="w-1/3 text-center">
+                          <span className="font-bold">NGN</span>
+                          {item.price}
+                        </span>
                         <button
                           onClick={() =>
                             router.push(`/event/${eventId}/payment`)
