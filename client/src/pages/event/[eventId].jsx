@@ -217,10 +217,10 @@ function EventPage() {
                     </div>
                   </div>
                 </div>
-                <div className="text-left lg:text-right mt-4 lg:mt-0">
+                <div className="text-left lg:text-right mt-4 lg:mt-0 flex flex-col gap-2 ">
                   <button
                     onClick={() => router.push(`/event/${eventId}/payment`)}
-                    className={`px-6 py-2 ${
+                    className={`px-3 py-2 ${
                       isUserRegistered
                         ? "bg-gray-700 hover:bg-gray-800"
                         : "bg-[color:var(--darker-secondary-color)] hover:bg-[color:var(--secondary-color)]"
@@ -229,53 +229,8 @@ function EventPage() {
                   >
                     {isUserRegistered ? "Already Registered" : "Single Ticket"}
                   </button>
-                </div>
-              </div>
-              <div className="border-b border-gray-300 mt-8 mb-4"></div>
-              <div className="flex flex-col md:flex-row md:items-center justify-between">
-                <div className="flex flex-col">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Ticket Pricing
-                  </h3>
-                  <p className="text-gray-800">
-                    {" "}
-                    <span className="font-bold">NGN</span>
-                    {eventData.price}
-                  </p>
-                </div>
-                <div className="flex mt-4 md:mt-0">
-                  <button
-                    onClick={share}
-                    className="px-6 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none"
-                  >
-                    Share
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+                  
 
-          {/* Third div with major event details */}
-          <div className="container mt-4 bg-[color:var(--primary-color)]">
-            <div className="container">
-              <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
-                <div className="mb-4 max-w-5xl bg-white px-6 py-4 rounded-lg shadow-md">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    About the Event
-                  </h3>
-                  {/* {Array(3)
-                    .fill()
-                    .map((_, index) => ( */}
-                  {/* <p key={index} className="text-gray-600 text-md"> */}
-                  <p className="text-gray-600 text-md">
-                    {eventData.description}
-                  </p>
-                  {/* ))} */}
-                </div>
-                <div className="mb-4 bg-white px-6 py-4 rounded-lg shadow-md">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Ticket Prices
-                  </h3>
                   <Dialog>
                     <DialogTrigger>
                       <button
@@ -362,6 +317,55 @@ function EventPage() {
                       </DialogHeader>
                     </DialogContent>
                   </Dialog>
+                </div>
+                
+              </div>
+              <div className="border-b border-gray-300 mt-8 mb-4"></div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between">
+                <div className="flex flex-col">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Ticket Pricing
+                  </h3>
+                  <p className="text-gray-800">
+                    {" "}
+                    <span className="font-bold">NGN</span>
+                    {eventData.price}
+                  </p>
+                </div>
+                <div className="flex mt-4 md:mt-0">
+                  <button
+                    onClick={share}
+                    className="px-6 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 focus:outline-none"
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Third div with major event details */}
+          <div className="container mt-4 bg-[color:var(--primary-color)]">
+            <div className="container">
+              <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-4">
+                <div className="mb-4 max-w-5xl bg-white px-6 py-4 rounded-lg shadow-md">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    About the Event
+                  </h3>
+                  {/* {Array(3)
+                    .fill()
+                    .map((_, index) => ( */}
+                  {/* <p key={index} className="text-gray-600 text-md"> */}
+                  <p className="text-gray-600 text-md">
+                    {eventData.description}
+                  </p>
+                  {/* ))} */}
+                </div>
+                <div className="mb-4 bg-white px-6 py-4 rounded-lg shadow-md">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    Ticket Price
+                  </h3>
+                 
                   <ul className="text-gray-600">
                     {[
                       {

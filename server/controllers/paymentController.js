@@ -25,10 +25,13 @@ const payment = async (req, res) => {
 
   var key = uuid().slice(0, 18);
 
-  const purChaseDataWithKey = purchaseData.map((data) => {
+  // const purChaseDataWithKey = purchaseData.map((data) => {
+  //   return { ...data, key: uuid().slice(0, 18) };
+  // });
+  const purChaseDataWithKey = (Array.isArray(purchaseData) ? purchaseData : []).map((data) => {
     return { ...data, key: uuid().slice(0, 18) };
   });
-
+  
   try {
     const customer = await stripe.customers.create({
       email: token.email,
@@ -147,7 +150,7 @@ const payment = async (req, res) => {
         sendTicket(Details);
       }
 
-      if (purchaseData) {
+      else if (purchaseData) {
         purChaseDataWithKey.forEach((data) => {
           const eachData = {
             email: data.email,
