@@ -47,34 +47,68 @@ function EventPage() {
   };
 
   // function that fetches the event data on load
-  const fetchEvent = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/getevent`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            event_id: eventId,
-          }),
+
+ const fetchEvent = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/getevent`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        event_id: eventId,
+                    }),
+                }
+            );
+            if (response.ok) {
+                const data = await response.json();
+                setEventData(data);
+                // Check if the user's ID exists in the participants array
+                setIsUserRegistered(
+                    data.participants.some(
+                        (participant) => participant.id === userId
+                    )
+                );
+            } else {
+                throw new Error(`${response.status} ${response.statusText}`);
+            }
+        } catch (error) {
+            console.error("Error fetching event data:", error.message);
         }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setEventData(data);
-        // Check if the user's ID exists in the participants array
-        setIsUserRegistered(
-          data.participants.some((participant) => participant.id === userId)
-        );
-      } else {
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-    } catch (error) {
-      console.error("Error fetching event data:", error.message);
-    }
-  };
+    };
+  
+  // const fetchEvent = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${process.env.NEXT_PUBLIC_API_URL}/getevent`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           event_id: eventId,
+  //         }),
+  //       }
+  //     );
+  //     console.log(response)
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setEventData(data);
+  //       // Check if the user's ID exists in the participants array
+  //       setIsUserRegistered(
+  //         data.participants.some((participant) => participant.id === userId)
+  //       );
+  //     } else {
+  //       throw new Error(`${response.status} ${response.statusText}`);
+  //     }
+  //   } catch (error) {
+  //     console.log(error)
+  //     console.error("[event-id]Error fetching event data:", error.message);
+  //   }
+  // };
 
   useEffect(() => {
     setMultiTicketsPrice(Number(eventData.price) * ticketItems.length);
@@ -193,7 +227,7 @@ function EventPage() {
                     } text-white rounded focus:outline-none`}
                     disabled={isUserRegistered}
                   >
-                    {isUserRegistered ? "Already Registered" : "Buy Tickets"}
+                    {isUserRegistered ? "Already Registered" : "Single Ticket"}
                   </button>
                 </div>
               </div>
@@ -243,7 +277,15 @@ function EventPage() {
                     Ticket Prices
                   </h3>
                   <Dialog>
-                    <DialogTrigger>Open</DialogTrigger>
+                    <DialogTrigger>
+                      <button
+                    className={`px-3 py-2 bg-[color:var(--darker-secondary-color)] hover:bg-[color:var(--secondary-color)]
+                             text-white rounded focus:outline-none`}
+                              >
+                                {"Multiple Tickets"}
+                              </button>
+
+                    </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
                         <DialogTitle>Are you absolutely sure?</DialogTitle>
@@ -344,7 +386,7 @@ function EventPage() {
                           <span className="font-bold">NGN</span>
                           {item.price}
                         </span>
-                        <button
+                        {/* <button
                           onClick={() =>
                             router.push(`/event/${eventId}/payment`)
                           }
@@ -356,7 +398,7 @@ function EventPage() {
                           disabled={isUserRegistered}
                         >
                           {isUserRegistered ? "Registered" : "Buy Tickets"}
-                        </button>
+                        </button> */}
                       </li>
                     ))}
                   </ul>

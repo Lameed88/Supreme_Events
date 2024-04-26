@@ -63,7 +63,7 @@ function AdminEventPage() {
                 throw new Error(`${response.status} ${response.statusText}`);
             }
         } catch (error) {
-            console.error("Error fetching event data:", error.message);
+            console.error("[deleteEvent]Error fetching event data:", error.message);
         }
     };
 
@@ -89,7 +89,7 @@ function AdminEventPage() {
                 throw new Error(`${response.status} ${response.statusText}`);
             }
         } catch (error) {
-            console.error("Error fetching event data:", error.message);
+            console.error("[adminevents-fetchEvent]Error fetching event data:", error.message);
         }
     };
 

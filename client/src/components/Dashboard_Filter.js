@@ -56,7 +56,7 @@ function Dashboard_Filter({
                     />
                 </div>
                 {/* Selection menu to choose a category */}
-                <div className="mb-2">
+                {/* <div className="mb-2">
                     <label
                         htmlFor="category"
                         className="font-medium block mb-1"
@@ -75,7 +75,7 @@ function Dashboard_Filter({
                         <option value="category2">Comic</option>
                         <option value="category3">Personalized</option>
                     </select>
-                </div>
+                </div> */}
                 {/* Input field to filter through a date range */}
                 <div className="mb-2">
                     <label

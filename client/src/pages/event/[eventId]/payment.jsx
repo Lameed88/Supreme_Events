@@ -61,7 +61,7 @@ export default function payment() {
           throw new Error(`${response.status} ${response.statusText}`);
         }
       } catch (error) {
-        console.error("Error fetching event data:", error.message);
+        console.error("[payment-fetchevent]Error fetching event data:", error.message);
       }
     };
 

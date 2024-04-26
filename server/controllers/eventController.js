@@ -32,7 +32,7 @@ function sendCheckInMail(data) {
            Olamide: moradeyor88@gmail.com<br>
           
            Best regards,<br>
-           SUPREME EVENT`,
+           SUPREME EVENTS`,
     };
 
     transporter.sendMail(mailOptions, function (err, success) {

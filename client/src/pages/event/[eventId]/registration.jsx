@@ -34,7 +34,7 @@ const Registration = () => {
           throw new Error(`${response.status} ${response.statusText}`);
         }
       } catch (error) {
-        console.error("Error fetching event data:", error.message);
+        console.error("[registration-fetchevent]Error fetching event data:", error.message);
       }
     };
 
@@ -89,7 +89,7 @@ const Registration = () => {
         throw new Error(`${response.status} ${response.statusText}`);
       }
     } catch (error) {
-      console.error("Error fetching event data:", error.message);
+      console.error("[handleSubmit]Error fetching event data:", error.message);
     }
   };
 
@@ -143,9 +143,9 @@ const Registration = () => {
                   <th className="p-2 bg-gray-100 border border-gray-300">
                     Email
                   </th>
-                  <th className="p-2 bg-gray-100 border border-gray-300">
+                  {/* <th className="p-2 bg-gray-100 border border-gray-300">
                     Reg. No.
-                  </th>
+                  </th> */}
                   <th className="p-2 bg-gray-100 border border-gray-300">
                     Checked
                   </th>
@@ -174,9 +174,9 @@ const Registration = () => {
                       <td className="p-2 border border-gray-300">
                         {user.email}
                       </td>
-                      <td className="p-2 border border-gray-300">
+                      {/* <td className="p-2 border border-gray-300">
                         {user.regno}
-                      </td>
+                      </td> */}
                       <td className="p-2 border border-gray-300 text-center w-1/4">
                         <label
                           htmlFor={`checkbox-${user.id}`}

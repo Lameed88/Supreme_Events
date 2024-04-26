@@ -12,13 +12,19 @@ function LandingPage() {
 
     // run the server when a user enters the site
     const fetchAllEvents = async () => {
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/getallevents`
-        );
-        console.log(response)
-        if (!response.ok) {
-            throw new Error(`${response.status} ${response.statusText}`);
+
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/getallevents`
+            );
+            console.log(response)
+        } catch (error) {
+            console.log(error)
         }
+       
+        // if (!response.ok) {
+        //     throw new Error(`${response.status} ${response.statusText}`);
+        // }
     };
 
     useEffect(() => {
