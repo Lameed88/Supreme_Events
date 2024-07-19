@@ -28,10 +28,11 @@ const payment = async (req, res) => {
   // const purChaseDataWithKey = purchaseData.map((data) => {
   //   return { ...data, key: uuid().slice(0, 18) };
   // });
+  
   const purChaseDataWithKey = (Array.isArray(purchaseData) ? purchaseData : []).map((data) => {
     return { ...data, key: uuid().slice(0, 18) };
   });
-  
+
   try {
     const customer = await stripe.customers.create({
       email: token.email,
@@ -40,7 +41,7 @@ const payment = async (req, res) => {
 
     charge = await stripe.charges.create(
       {
-        amount: product.price * 100,
+        amount: product.price * 100,    
         currency: "NGN",
         customer: customer.id,
         receipt_email: token.email,
@@ -150,7 +151,7 @@ const payment = async (req, res) => {
         sendTicket(Details);
       }
 
-      else if (purchaseData) {
+      if (purchaseData) {
         purChaseDataWithKey.forEach((data) => {
           const eachData = {
             email: data.email,

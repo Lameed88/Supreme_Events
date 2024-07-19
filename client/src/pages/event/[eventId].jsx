@@ -243,7 +243,7 @@ function EventPage() {
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>
-                        <DialogTitle>Are you absolutely sure?</DialogTitle>
+                        <DialogTitle>Please enter your details</DialogTitle>
                         <DialogDescription>
                           <form action="" onSubmit={handleMultiTicketsPurchase}>
                             {ticketItems.map((ticketItem, index) => (

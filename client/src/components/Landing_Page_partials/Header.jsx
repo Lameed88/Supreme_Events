@@ -41,7 +41,7 @@ function StickyNavbar() {
           About-us
         </a>
       </Typography>
-      {/* <Typography
+      <Typography
         as="li"
         variant="large"
         color="blue-gray"
@@ -50,8 +50,8 @@ function StickyNavbar() {
         <a href="/contact" className="flex items-center text-[20px] ">
           Contact
         </a>
-      </Typography> */}
-      <Typography
+      </Typography>
+      {/* <Typography
         as="li"
         variant="large"
         color="blue-gray"
@@ -60,7 +60,7 @@ function StickyNavbar() {
         <Link href="/contact" className="flex items-center text-[20px]">
           Contact
         </Link>
-      </Typography>
+      </Typography> */}
     </ul>
   );
 

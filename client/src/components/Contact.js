@@ -1,6 +1,6 @@
-// import React from "react";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faMapMarkerAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarkerAlt, faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 
 // const contact = () => {
@@ -94,7 +94,7 @@
 // export default contact;
 
 
-const contact = () => {
+const Contact = () => {
   return (
     <div className="">
       <div className="bg-[#c9c8c8]">
@@ -167,4 +167,4 @@ const contact = () => {
   );
 };
 
-export default contact;
+export default Contact;
