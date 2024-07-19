@@ -22,9 +22,9 @@
 //             console.log(error)
 //         }
        
-//         // if (!response.ok) {
-//         //     throw new Error(`${response.status} ${response.statusText}`);
-//         // }
+//         if (!response.ok) {
+//             throw new Error(`${response.status} ${response.statusText}`);
+//         }
 //     };
 
 //     useEffect(() => {
