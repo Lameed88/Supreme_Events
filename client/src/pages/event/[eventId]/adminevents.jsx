@@ -1,3 +1,4 @@
+"use client"
 import AdminNavBar from "@/components/AdminNavBar";
 import { getAdminToken } from "@/utils/getAdminToken";
 import Head from "next/head";
