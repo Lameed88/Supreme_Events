@@ -1,3 +1,5 @@
+"use client"
+
 import { setUserToken } from "@/utils/setUserToken";
 import { Button } from "@material-tailwind/react";
 import { useRouter } from "next/router";

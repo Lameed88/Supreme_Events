@@ -1,3 +1,4 @@
+"use client"
 import AdminNavBar from "@/components/AdminNavBar";
 import CreateEventForm from "@/components/CreateEventForm";
 import Image from "next/image";

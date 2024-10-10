@@ -1,3 +1,4 @@
+"use client"
 import AdminNavBar from "@/components/AdminNavBar";
 import dummyUsers from "@/utils/dummyUsers";
 import { useState, useEffect } from "react";

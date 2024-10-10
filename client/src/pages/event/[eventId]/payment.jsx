@@ -1,3 +1,4 @@
+"use client"
 import NavBar from "@/components/UserNavBar";
 import { getUserToken } from "@/utils/getUserToken";
 import Head from "next/head";
